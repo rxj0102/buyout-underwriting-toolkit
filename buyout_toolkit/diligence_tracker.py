@@ -14,6 +14,7 @@ with a seeded random number generator for reproducibility.
 from __future__ import annotations
 
 import random
+import zlib
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
@@ -88,7 +89,8 @@ def generate_diligence_checklist(target: Target, seed: int = 100) -> List[Checkl
     """Generate a synthetic due diligence checklist (20-30 items across
     the four workstreams) for the given target.
     """
-    rng = random.Random(seed + hash(target.target_id) % 10_000)
+    target_hash = zlib.crc32(target.target_id.encode("utf-8"))
+    rng = random.Random(seed + target_hash % 10_000)
     items: List[ChecklistItem] = []
     counter = 1
 
