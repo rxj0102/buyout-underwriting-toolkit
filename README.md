@@ -1,5 +1,7 @@
 # Buyout Underwriting Toolkit
 
+[![CI](https://github.com/rxj0102/buyout-underwriting-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/rxj0102/buyout-underwriting-toolkit/actions/workflows/ci.yml)
+
 A Python toolkit that models the core underwriting workflow of a private
 equity **Investment Analyst** at a **buy-and-build ("roll-up") platform**
 focused on durable, essential-services industries — think residential
