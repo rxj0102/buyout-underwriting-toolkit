@@ -90,3 +90,24 @@ def test_upside_case_outperforms_base_which_outperforms_downside():
     results = run_all_cases(target)
     assert results["upside"].moic > results["base"].moic > results["downside"].moic
     assert results["upside"].irr > results["base"].irr > results["downside"].irr
+
+
+def test_unswept_cash_reaches_exit_equity():
+    from dataclasses import replace
+
+    from buyout_toolkit.deal_pipeline import generate_pipeline
+    from buyout_toolkit.lbo_model import default_assumptions, run_lbo_case
+
+    target = generate_pipeline()[0]
+    a = replace(default_assumptions(target), cash_sweep_pct=0.5)
+    res = run_lbo_case(target, "base", a)
+    sched = res.schedule
+    uses = sum(
+        y.mandatory_amortization + y.cash_sweep_senior + y.cash_sweep_seller_note
+        for y in sched
+    )
+    fcf = sum(y.free_cash_flow_pre_debt_service for y in sched)
+    assert sched[-1].cash_end > 0
+    assert abs(fcf - uses - sched[-1].cash_end) < 1.0
+    gross_debt = sched[-1].senior_debt_end + sched[-1].seller_note_end
+    assert res.exit_net_debt == pytest.approx(gross_debt - sched[-1].cash_end, abs=1.0)

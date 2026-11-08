@@ -66,6 +66,7 @@ class YearSchedule:
     cash_sweep_seller_note: float
     senior_debt_end: float
     seller_note_end: float
+    cash_end: float = 0.0  # cumulative unswept cash (negative = shortfall funded off-model)
 
 
 @dataclass
@@ -198,6 +199,7 @@ def project_schedule(
     seller_balance = sources_uses.seller_note
     original_senior_principal = sources_uses.senior_debt
     mandatory_amort = original_senior_principal * assumptions.senior_mandatory_amort_pct
+    cash_balance = 0.0
 
     for yr in range(1, assumptions.hold_period_years + 1):
         revenue = revenue * (1 + assumptions.revenue_growth_rate)
@@ -235,6 +237,12 @@ def project_schedule(
         senior_end = senior_after_mandatory - sweep_to_senior
         seller_end = seller_end_before_sweep - sweep_to_seller
 
+        # Cash that is neither used for amortization nor swept stays on the
+        # balance sheet and belongs to equity at exit; a shortfall against
+        # mandatory amortization is carried as negative cash (an implicit,
+        # zero-interest revolver draw) rather than silently ignored.
+        cash_balance += fcf_pre_debt_service - actual_mandatory_amort - sweep_to_senior - sweep_to_seller
+
         schedule.append(
             YearSchedule(
                 year=yr,
@@ -255,6 +263,7 @@ def project_schedule(
                 cash_sweep_seller_note=round(sweep_to_seller, 2),
                 senior_debt_end=round(senior_end, 2),
                 seller_note_end=round(seller_end, 2),
+                cash_end=round(cash_balance, 2),
             )
         )
 
@@ -286,7 +295,9 @@ def run_lbo_case(
 
     exit_multiple = assumptions.exit_multiple if assumptions.exit_multiple is not None else assumptions.entry_multiple
     exit_ev = round(final_year.ebitda * exit_multiple, 2)
-    exit_net_debt = round(final_year.senior_debt_end + final_year.seller_note_end, 2)
+    exit_net_debt = round(
+        final_year.senior_debt_end + final_year.seller_note_end - final_year.cash_end, 2
+    )
     exit_equity = round(exit_ev - exit_net_debt, 2)
 
     initial_equity = sources_uses.sponsor_equity
