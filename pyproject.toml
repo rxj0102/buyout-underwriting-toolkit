@@ -1,0 +1,14 @@
+[project]
+name = "buyout-underwriting-toolkit"
+version = "0.1.0"
+description = "Research code for buyout-underwriting-toolkit"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=7.4"
+]
+
+[dependency-groups]
+dev = ["pytest>=7.4"]
+
+[tool.uv]
+package = false
