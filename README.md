@@ -3,8 +3,8 @@
 [![CI](https://github.com/rxj0102/buyout-underwriting-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/rxj0102/buyout-underwriting-toolkit/actions/workflows/ci.yml)
 
 A Python toolkit that models the core underwriting workflow of a private
-equity **Investment Analyst** at a **buy-and-build ("roll-up") platform**
-focused on durable, essential-services industries — think residential
+equity **Investment Analyst** at a **buy-and-build (*roll-up*) platform**
+focused on durable, essential-services industries: think residential
 HVAC, plumbing, pest control, or commercial landscaping. It walks the
 same path a real deal would: source and prioritize targets, value one,
 structure an LBO around it, model it as a bolt-on to an existing
@@ -23,7 +23,7 @@ platform, track diligence, and write it up for the Investment Committee
 ## The scenario
 
 A sponsor runs a buy-and-build strategy in fragmented, essential-services
-trades — businesses that are recession-resistant, non-discretionary, and
+trades: businesses that are recession-resistant, non-discretionary, and
 ripe for consolidation. The firm already owns one regional platform
 company and is sourcing bolt-on acquisitions across four sub-sectors:
 
@@ -59,7 +59,7 @@ and prints a worked example using the top-ranked synthetic target.
 
 ## Methodology by module
 
-### 1. `deal_pipeline.py` — sourcing & prioritization
+### 1. `deal_pipeline.py`: sourcing & prioritization
 
 Generates 40-60 synthetic acquisition targets spread across the four
 sub-sectors, each with revenue, EBITDA margin, growth rate, recurring
@@ -67,13 +67,13 @@ revenue mix, customer concentration, owner age, succession situation, and
 outreach status. Three scoring pillars, each 0-100, roll up into a single
 priority score:
 
-- **Strategic fit** — how central the sub-sector is to the roll-up
+- **Strategic fit**: how central the sub-sector is to the roll-up
   thesis, recurring-revenue/cross-sell potential, footprint density in
   the platform's existing states, and multi-location scalability.
-- **Financial quality** — EBITDA margin, growth, customer concentration
-  risk, and a "sweet spot" revenue size ($8M-$25M) typical of a fundable
+- **Financial quality**: EBITDA margin, growth, customer concentration
+  risk, and a *sweet spot* revenue size ($8M-$25M) typical of a fundable
   bolt-on.
-- **Sourcing feasibility** — owner succession urgency (used as a proxy
+- **Sourcing feasibility**: owner succession urgency (used as a proxy
   for near-term willingness to transact) and how far outreach has
   already progressed.
 
@@ -81,7 +81,7 @@ priority score:
 (35% strategic fit / 40% financial quality / 25% sourcing feasibility) is
 configurable.
 
-### 2. `valuation_model.py` — valuation cross-check
+### 2. `valuation_model.py`: valuation cross-check
 
 For a single target, produces:
 
@@ -94,7 +94,7 @@ For a single target, produces:
   and a corresponding **equity value range** (EV less the target's net
   debt, consistent with a cash-free, debt-free deal).
 
-### 3. `lbo_model.py` — acquisition financing & returns
+### 3. `lbo_model.py`: acquisition financing & returns
 
 Builds a **sources & uses table** (purchase EV + fees = senior debt +
 seller note + sponsor equity, which balance by construction) and projects
@@ -105,22 +105,22 @@ modeled at a terminal EBITDA multiple in **base, upside, and downside**
 cases (varying growth, margin trajectory, and exit multiple), producing
 platform-level **IRR and MOIC** for each case.
 
-### 4. `addon_synergy_model.py` — the bolt-on case
+### 4. `addon_synergy_model.py`: the bolt-on case
 
 Models the target as an add-on to the firm's existing (also synthetic)
 platform company. Quantifies three synergy levers, each ramped linearly
 to full run-rate over 3 years:
 
-- **Cross-sell revenue synergy** — incremental revenue from selling the
+- **Cross-sell revenue synergy**: incremental revenue from selling the
   platform's other service lines into the target's customer base, with
   an incremental EBITDA flow-through margin.
-- **Overhead consolidation** — corporate/SG&A cost take-out.
-- **Purchasing scale** — procurement savings from combined buying power.
+- **Overhead consolidation**: corporate/SG&A cost take-out.
+- **Purchasing scale**: procurement savings from combined buying power.
 
 It then compares **combined platform-level IRR/MOIC with vs. without**
 those synergies being realized, isolating the synergy delta.
 
-### 5. `diligence_tracker.py` — due diligence
+### 5. `diligence_tracker.py`: due diligence
 
 A 20-30 item checklist spanning **Financial, Legal, Operational, and
 Commercial** workstreams, each item with an owner, a status (Not
@@ -130,11 +130,11 @@ completion %, per-workstream completion, outstanding red/medium flags,
 and a **deal readiness verdict** (blocked on any open HIGH flag,
 otherwise gated by completion % and open MEDIUM flags).
 
-### 6. `investment_memo.py` — the IC memo
+### 6. `investment_memo.py`: the IC memo
 
-Assembles a structured memo — thesis, financial profile, valuation
+Assembles a structured memo: thesis, financial profile, valuation
 summary, proposed offer terms & structure, standalone and synergy-case
-returns, key risks, diligence status, and a recommendation — by calling
+returns, key risks, diligence status, and a recommendation: by calling
 into every module above rather than re-deriving any figure. The
 recommendation logic checks base-case returns against IRR/MOIC hurdles,
 confirms the downside case is capital-protective, and blocks outright on
